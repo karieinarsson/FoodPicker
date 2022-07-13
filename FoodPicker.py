@@ -1,9 +1,19 @@
 import pandas as pd
 import random as rand
 import curses
+from os.path import exists
 
 data = "data.csv"
 buff = "buffer.csv"
+
+def init():
+    if not exists(data):
+        df = pd.DataFrame({"name": [],"url": []})
+        df.to_csv(data, index = False)
+    if not exists(buff):
+        df = pd.DataFrame({"buff": [0,1]})
+        df.to_csv(buff, index = False)
+
 
 def add_course(screen):
     screen.clear()
@@ -21,6 +31,7 @@ def add_course(screen):
     
     return print_all_courses(screen)
 
+
 def get_string(screen):
     curses.echo()
     string = ""
@@ -35,9 +46,10 @@ def get_string(screen):
 def print_all_courses(screen):
     df = pd.read_csv(data)
     screen.clear()
-    screen.addstr(0,0,df)
+    screen.addstr(0,0,df.to_string())
     screen.refresh()
     return screen.getch()
+
 
 def new_courses(screen):
     df = pd.read_csv(data)
@@ -67,6 +79,7 @@ def new_courses(screen):
     screen.refresh()
     return screen.getch()
 
+
 def get_courses(screen):
     data_df = pd.read_csv(data)
     buff_df = pd.read_csv(buff)
@@ -86,7 +99,9 @@ def get_courses(screen):
     screen.refresh()
     return screen.getch()
 
+
 def main():
+    init()
     screen = curses.initscr()
     curses.curs_set(0)  # Turn cursor off
     curses.cbreak()     # Turn off cbreak mode
@@ -126,6 +141,7 @@ def main():
     curses.echo()       # Turn echo back on
     curses.curs_set(1)  # Turn cursor back on
     curses.endwin()
+
 
 if __name__ == "__main__":
     main()
