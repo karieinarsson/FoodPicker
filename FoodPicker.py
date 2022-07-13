@@ -3,8 +3,9 @@ import random as rand
 import curses
 from os.path import exists
 
-data = "data.csv"
-buff = "buffer.csv"
+csv_dir = "csv/"
+data = csv_dir + "data.csv"
+buff = csv_dir + "buffer.csv"
 
 def init():
     if not exists(data):
@@ -46,7 +47,8 @@ def get_string(screen):
 def print_all_courses(screen):
     df = pd.read_csv(data)
     screen.clear()
-    screen.addstr(0,0,df.to_string())
+    for i, name in enumerate(df["name"]):
+        screen.addstr(i,0,str(i) + ": " + name)
     screen.refresh()
     return screen.getch()
 
@@ -114,7 +116,8 @@ def main():
         screen.addstr(0,0,"1: Add Course")
         screen.addstr(1,0,"2: New courses")
         screen.addstr(2,0,"3: Get current courses")
-        screen.addstr(3,0,"q: quit")
+        screen.addstr(3,0,"4: Show all courses")
+        screen.addstr(4,0,"q: quit")
         screen.refresh()
         
         answer = chr(screen.getch())
@@ -132,6 +135,9 @@ def main():
        
         elif answer == "3":
             c = get_courses(screen)
+        
+        elif answer == "4":
+            c = print_all_courses(screen)
 
         if chr(c) == "q":
             break
